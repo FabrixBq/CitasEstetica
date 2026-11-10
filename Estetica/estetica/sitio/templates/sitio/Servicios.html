@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuestros Servicios - Estética</title>
+    <link rel="stylesheet" href="{% static 'sitio/css/EstiloIndex.css' %}">
+</head>
+<body>
+    <main class="container">
+        <h1>Servicios Disponibles</h1>
+        
+        <div class="grid-servicios">
+            {% for servicio in servicios %}
+                <div class="card-servicio">
+                    <!-- Revisa los nombres exactos de las columnas de tu tabla en MySQL -->
+                    <h2>{{ servicio.nombre }}</h2>
+                    <p>{{ servicio.duracion_min }} minutos</p>
+                    <span>Precio: ${{ servicio.precio }}</span>
+                </div>
+            {% empty %}
+                <p>Por el momento no hay servicios registrados en la base de datos.</p>
+            {% endfor %}
+        </div>
+    </main>
+</body>
+</html>

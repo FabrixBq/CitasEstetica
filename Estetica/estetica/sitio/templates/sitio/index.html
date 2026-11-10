@@ -1,0 +1,21 @@
+{% load static %}
+<DOCTYPE html>
+<html>
+    <head>
+        <title> Estética </title>
+        <link rel="stylesheet" href="{% static 'sitio/css/EstiloIndex.css' %}">
+    </head>
+    <body>
+        <h1>Bienvenido a la Estética</h1>
+        <p>En nuestra estética ofrecemos una variedad de servicios para cuidar y embellecer tu cabello. Nuestro equipo de profesionales está listo para brindarte la mejor experiencia.</p>
+        <a href="{% url 'formulario' %}">Agendar Cita</a>
+        <!-- Para el menú de los módulos -->
+        <nav>
+            <ul class="menu_modulos">
+                <li><a href="{% url 'index' %}">Inicio</a></li>
+                <li><a href="{% url 'formulario' %}">Formulario de Cita</a></li>
+                <li><a href="{% url 'servicios' %}">Servicios</a></li>
+            </ul>
+        </nav>
+    </body>
+</html>

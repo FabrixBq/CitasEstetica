@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Formulario de Cita </title>
+        <link rel="stylesheet" href="{% static 'sitio/css/EstiloFormulario.css' %}">
+    </head>
+    <body>
+        <h1>Formulario</h1>
+        <form>
+             Nommbre: <input type="text" name="nombre"><br>
+             Apellido: <input type="text" name="apellido"><br>
+             Correo: <input type="email" name="correo"><br>
+             Servicio: <select name="servicio">
+                 <option value="corte">Corte de Cabello</option>
+                 <option value="peinado">Peinado</option>
+                 <option value="extensiones">Extensiones</option>
+                 <option value="coloracion">Coloración de Cabello</option>
+             </select><br>
+             Fecha de Cita: <input type="date" name="fecha"><br>
+             Hora de Cita: <input type="time" name="hora"><br>
+             <input type="submit" value="Enviar">
+        </form>
+    </body>
+</html>
