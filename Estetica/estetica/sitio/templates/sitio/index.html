@@ -1,21 +1,119 @@
+{% extends 'sitio/base.html' %}
 {% load static %}
-<DOCTYPE html>
-<html>
-    <head>
-        <title> Estética </title>
-        <link rel="stylesheet" href="{% static 'sitio/css/EstiloIndex.css' %}">
-    </head>
-    <body>
-        <h1>Bienvenido a la Estética</h1>
-        <p>En nuestra estética ofrecemos una variedad de servicios para cuidar y embellecer tu cabello. Nuestro equipo de profesionales está listo para brindarte la mejor experiencia.</p>
-        <a href="{% url 'formulario' %}">Agendar Cita</a>
-        <!-- Para el menú de los módulos -->
-        <nav>
-            <ul class="menu_modulos">
-                <li><a href="{% url 'index' %}">Inicio</a></li>
-                <li><a href="{% url 'formulario' %}">Formulario de Cita</a></li>
-                <li><a href="{% url 'servicios' %}">Servicios</a></li>
-            </ul>
-        </nav>
-    </body>
-</html>
+
+{% block titulo %}Inicio · Estética Unisex{% endblock %}
+
+{% block estilos %}
+<link rel="stylesheet" href="{% static 'sitio/css/EstiloIndex.css' %}">
+{% endblock %}
+
+{% block contenido %}
+<section class="portada">
+    <div class="portada__interior">
+        <div>
+            <p class="etiqueta etiqueta--clara">Salón de belleza</p>
+            <h1>Cuidado del cabello con <em>precisión</em> y estilo.</h1>
+            <p class="portada__parrafo">
+                Corte, color y tratamientos en un espacio sobrio, pensado para que salgas
+                con el cabello que querías. Agenda en línea y llega directo a tu silla.
+            </p>
+
+            <div class="portada__acciones">
+                <a class="boton boton--blanco" href="{% url 'formulario' %}">Agendar cita</a>
+                <a class="boton boton--linea" href="{% url 'servicios' %}">Ver servicios</a>
+            </div>
+
+            <div class="portada__datos">
+                <div class="dato">
+                    <span class="dato__valor">15+</span>
+                    <span class="dato__texto">Años de oficio</span>
+                </div>
+                <div class="dato">
+                    <span class="dato__valor">6</span>
+                    <span class="dato__texto">Días a la semana</span>
+                </div>
+                <div class="dato">
+                    <span class="dato__valor">100%</span>
+                    <span class="dato__texto">Cita con reserva</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="portada__visual" aria-hidden="true">
+            <span class="portada__aro"></span>
+            <span class="portada__monograma">E</span>
+            <p class="portada__pie">Estética Unisex<br>Corte · Color · Tratamientos</p>
+        </div>
+    </div>
+</section>
+
+<section class="seccion">
+    <div class="contenedor">
+        <div class="encabezado-seccion">
+            <div>
+                <p class="etiqueta">Nuestra forma de trabajar</p>
+                <h2>Un mismo cuidado, en tres pasos</h2>
+            </div>
+            <a class="boton boton--fantasma boton--chico" href="{% url 'servicios' %}">Carta completa</a>
+        </div>
+
+        <div class="enfoque">
+            <article class="enfoque__item">
+                <span class="enfoque__num">01</span>
+                <h3>Diagnóstico</h3>
+                <p>Revisamos tu tipo de cabello, su historial y lo que buscas antes de tocar las tijeras.</p>
+            </article>
+            <article class="enfoque__item">
+                <span class="enfoque__num">02</span>
+                <h3>Servicio a la medida</h3>
+                <p>Elegimos la técnica y el producto justos, con tiempos de aplicación claros desde el inicio.</p>
+            </article>
+            <article class="enfoque__item">
+                <span class="enfoque__num">03</span>
+                <h3>Acabado y seguimiento</h3>
+                <p>Te llevas indicaciones sencillas para mantener el resultado en casa hasta tu próxima visita.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="seccion seccion--hueso">
+    <div class="contenedor">
+        <div class="encabezado-seccion">
+            <div>
+                <p class="etiqueta">Servicios destacados</p>
+                <h2>Lo más solicitado</h2>
+            </div>
+        </div>
+
+        <div class="rejilla-servicios">
+            {% for servicio in servicios_destacados %}
+                <article class="tarjeta-servicio">
+                    <p class="tarjeta-servicio__num">{{ forloop.counter|stringformat:"02d" }}</p>
+                    <h2>{{ servicio.nombre }}</h2>
+                    <p class="tarjeta-servicio__meta">
+                        <span>{{ servicio.duracion_min|default:"—" }} min</span>
+                        <span class="tarjeta-servicio__precio">
+                            {% if servicio.precio %}${{ servicio.precio|floatformat:2 }}{% else %}—{% endif %}
+                        </span>
+                    </p>
+                    <a class="tarjeta-servicio__link" href="{% url 'formulario' %}">Reservar <span>→</span></a>
+                </article>
+            {% empty %}
+                <p class="vacio">Por el momento no hay servicios registrados en la base de datos.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="franja">
+    <div class="franja__interior">
+        <p class="etiqueta etiqueta--clara">Agenda en línea</p>
+        <h2>Reserva tu próxima cita en menos de un minuto.</h2>
+        <p class="franja__texto">
+            Elige el servicio, el día y la hora. Tu lugar queda apartado en cuanto confirmas.
+        </p>
+        <a class="boton boton--blanco" href="{% url 'formulario' %}">Agendar ahora</a>
+    </div>
+</section>
+{% endblock %}

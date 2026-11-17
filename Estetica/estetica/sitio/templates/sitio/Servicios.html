@@ -1,27 +1,42 @@
+{% extends 'sitio/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Nuestros Servicios - Estética</title>
-    <link rel="stylesheet" href="{% static 'sitio/css/EstiloIndex.css' %}">
-</head>
-<body>
-    <main class="container">
-        <h1>Servicios Disponibles</h1>
-        
-        <div class="grid-servicios">
+
+{% block titulo %}Servicios · Estética Unisex{% endblock %}
+
+{% block contenido %}
+<section class="seccion">
+    <div class="contenedor">
+        <header class="pagina-encabezado">
+            <p class="etiqueta">Carta de servicios</p>
+            <h1>Servicios disponibles</h1>
+            <p class="entradilla">
+                Cada servicio incluye diagnóstico, lavado y acabado. Los precios son en pesos
+                e incluyen producto; la duración indicada es aproximada.
+            </p>
+        </header>
+
+        <div class="rejilla-servicios">
             {% for servicio in servicios %}
-                <div class="card-servicio">
-                    <!-- Revisa los nombres exactos de las columnas de tu tabla en MySQL -->
+                <article class="tarjeta-servicio">
+                    <p class="tarjeta-servicio__num">{{ forloop.counter|stringformat:"02d" }}</p>
                     <h2>{{ servicio.nombre }}</h2>
-                    <p>{{ servicio.duracion_min }} minutos</p>
-                    <span>Precio: ${{ servicio.precio }}</span>
-                </div>
+                    <p class="tarjeta-servicio__meta">
+                        <span>{{ servicio.duracion_min|default:"—" }} min</span>
+                        <span class="tarjeta-servicio__precio">
+                            {% if servicio.precio %}${{ servicio.precio|floatformat:2 }}{% else %}—{% endif %}
+                        </span>
+                    </p>
+                    <a class="tarjeta-servicio__link" href="{% url 'formulario' %}">Agendar <span>→</span></a>
+                </article>
             {% empty %}
-                <p>Por el momento no hay servicios registrados en la base de datos.</p>
+                <p class="vacio">Por el momento no hay servicios registrados en la base de datos.</p>
             {% endfor %}
         </div>
-    </main>
-</body>
-</html>
+
+        <div class="pagina-llamada">
+            <p>¿No sabes cuál elegir? Escríbenos y te orientamos antes de reservar.</p>
+            <a class="boton boton--negro" href="{% url 'formulario' %}">Agendar una cita</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

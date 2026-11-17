@@ -10,8 +10,8 @@ from django.db import models
 
 class Cita(models.Model):
     id_cita = models.AutoField(primary_key=True)
-    id_usuario = models.ForeignKey('Usuario', models.DB_CASCADE, db_column='id_usuario', blank=True, null=True)
-    id_servicio = models.ForeignKey('Servicio', models.DB_CASCADE, db_column='id_servicio', blank=True, null=True)
+    id_usuario = models.ForeignKey('Usuario', models.CASCADE, db_column='id_usuario', blank=True, null=True)
+    id_servicio = models.ForeignKey('Servicio', models.CASCADE, db_column='id_servicio', blank=True, null=True)
     fecha = models.DateField(blank=True, null=True)
     hora_inicio = models.TimeField(blank=True, null=True)
     hora_fin = models.TimeField(blank=True, null=True)

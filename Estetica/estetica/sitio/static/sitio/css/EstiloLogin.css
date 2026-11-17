@@ -1,0 +1,160 @@
+/* =========================================================
+   Pantalla de inicio de sesión · panel negro / formulario claro
+   ========================================================= */
+
+.pagina-login {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    min-height: 100vh;
+    background: var(--blanco);
+}
+
+/* Panel izquierdo */
+
+.login-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 3rem;
+    padding: clamp(2rem, 4vw, 3.5rem);
+    color: var(--blanco);
+    background: var(--negro);
+    overflow: hidden;
+}
+
+.login-panel::before,
+.login-panel::after {
+    content: "";
+    position: absolute;
+    border: 1px solid rgba(255, 255, 255, .12);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.login-panel::before {
+    width: 24rem;
+    height: 24rem;
+    right: -9rem;
+    top: -8rem;
+}
+
+.login-panel::after {
+    width: 15rem;
+    height: 15rem;
+    right: -4rem;
+    bottom: -5rem;
+}
+
+.login-panel__marca {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: .8rem;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+    color: var(--blanco);
+}
+
+.login-panel__cita {
+    position: relative;
+    max-width: 30rem;
+}
+
+.login-panel__etiqueta {
+    margin-bottom: 1.15rem;
+    font-size: .66rem;
+    font-weight: 700;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    color: #8f8f8f;
+}
+
+.login-panel__frase {
+    margin: 0;
+    font-family: var(--display);
+    font-size: clamp(1.45rem, 2.4vw, 2.05rem);
+    line-height: 1.4;
+    color: #f0f0f0;
+}
+
+.login-panel__volver {
+    position: relative;
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: #a8a8a8;
+    transition: color var(--transicion);
+}
+
+.login-panel__volver:hover {
+    color: var(--blanco);
+}
+
+/* Formulario */
+
+.login-formulario {
+    display: grid;
+    place-items: center;
+    padding: clamp(2rem, 4vw, 3.5rem);
+}
+
+.login-caja {
+    width: 100%;
+    max-width: 24rem;
+}
+
+.login-caja h1 {
+    margin-bottom: .55rem;
+    font-size: clamp(2rem, 3vw, 2.5rem);
+}
+
+.login-caja__texto {
+    margin-bottom: 2rem;
+    font-size: .93rem;
+    color: var(--gris);
+}
+
+.login-caja .campo input {
+    padding: .95rem 1rem;
+}
+
+.login-caja__pie {
+    margin-top: 1.75rem;
+    font-size: .8rem;
+    text-align: center;
+    color: var(--gris);
+}
+
+.avisos--login {
+    max-width: none;
+    margin: 0 0 1.5rem;
+    padding: 0;
+}
+
+@media (max-width: 860px) {
+    .pagina-login {
+        grid-template-columns: 1fr;
+        min-height: 0;
+    }
+
+    .login-panel {
+        gap: 2rem;
+        padding: 2rem 1.5rem 2.5rem;
+    }
+
+    .login-panel__cita {
+        max-width: none;
+    }
+
+    .login-panel__frase {
+        font-size: 1.3rem;
+    }
+
+    .login-formulario {
+        padding: 2.5rem 1.5rem 3.5rem;
+    }
+}

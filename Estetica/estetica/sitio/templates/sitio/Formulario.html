@@ -1,25 +1,96 @@
+{% extends 'sitio/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html>
-    <head>
-        <title> Formulario de Cita </title>
-        <link rel="stylesheet" href="{% static 'sitio/css/EstiloFormulario.css' %}">
-    </head>
-    <body>
-        <h1>Formulario</h1>
-        <form>
-             Nommbre: <input type="text" name="nombre"><br>
-             Apellido: <input type="text" name="apellido"><br>
-             Correo: <input type="email" name="correo"><br>
-             Servicio: <select name="servicio">
-                 <option value="corte">Corte de Cabello</option>
-                 <option value="peinado">Peinado</option>
-                 <option value="extensiones">Extensiones</option>
-                 <option value="coloracion">Coloración de Cabello</option>
-             </select><br>
-             Fecha de Cita: <input type="date" name="fecha"><br>
-             Hora de Cita: <input type="time" name="hora"><br>
-             <input type="submit" value="Enviar">
-        </form>
-    </body>
-</html>
+
+{% block titulo %}Agendar cita · Estética Unisex{% endblock %}
+
+{% block estilos %}
+<link rel="stylesheet" href="{% static 'sitio/css/EstiloFormulario.css' %}">
+{% endblock %}
+
+{% block contenido %}
+<section class="seccion">
+    <div class="contenedor">
+        <header class="pagina-encabezado">
+            <p class="etiqueta">Reserva tu lugar</p>
+            <h1>Agenda tu cita</h1>
+            <p class="entradilla">
+                Elige el servicio, el día y la hora. La cita queda registrada a tu nombre
+                y reserva el tiempo completo del servicio.
+            </p>
+        </header>
+
+        <div class="cita-layout">
+            <form class="cita-form" method="post" action="{% url 'formulario' %}">
+                {% csrf_token %}
+
+                {% if errores %}
+                    <div class="cita-errores">
+                        <p class="cita-errores__titulo">Revisa lo siguiente</p>
+                        <ul>
+                            {% for error in errores %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <div class="campo">
+                    <label for="id_servicio">Servicio</label>
+                    <select name="id_servicio" id="id_servicio" required>
+                        <option value="">Selecciona un servicio…</option>
+                        {% for servicio in servicios %}
+                            <option value="{{ servicio.id_servicio }}"
+                                {% if datos.id_servicio == servicio.id_servicio|stringformat:"s" %}selected{% endif %}>
+                                {{ servicio.nombre }}{% if servicio.duracion_min %} · {{ servicio.duracion_min }} min{% endif %}{% if servicio.precio %} · ${{ servicio.precio|floatformat:2 }}{% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="cita-fila">
+                    <div class="campo">
+                        <label for="fecha">Fecha</label>
+                        <input type="date" name="fecha" id="fecha"
+                               value="{{ datos.fecha }}" min="{{ hoy|date:'Y-m-d' }}" required>
+                    </div>
+                    <div class="campo">
+                        <label for="hora_inicio">Hora</label>
+                        <input type="time" name="hora_inicio" id="hora_inicio"
+                               value="{{ datos.hora_inicio }}" min="08:00" max="20:00" step="900" required>
+                    </div>
+                </div>
+
+                <div class="cita-cliente">
+                    <span class="cita-cliente__titulo">A nombre de</span>
+                    <strong>{{ usuario.nombre|default:"Cliente" }}</strong>
+                    <span>{{ usuario.correo }}</span>
+                </div>
+
+                <button class="boton boton--negro boton--bloque" type="submit">Confirmar cita</button>
+                <p class="cita-nota">Te esperamos 5 minutos antes de tu horario. Si necesitas moverla, avísanos con anticipación.</p>
+            </form>
+
+            <aside class="cita-aside">
+                <p class="cita-aside__titulo">Cómo funciona</p>
+                <ol class="cita-pasos">
+                    <li>
+                        <span>01</span>
+                        <p>Elige el servicio que necesitas de la lista.</p>
+                    </li>
+                    <li>
+                        <span>02</span>
+                        <p>Selecciona día y hora dentro del horario del salón.</p>
+                    </li>
+                    <li>
+                        <span>03</span>
+                        <p>Recibe la confirmación y llega listo para tu cita.</p>
+                    </li>
+                </ol>
+
+                <p class="cita-aside__horario">Lun a Sáb<br>9:00 — 20:00</p>
+                <a class="boton boton--linea boton--chico" href="{% url 'servicios' %}">Ver servicios</a>
+            </aside>
+        </div>
+    </div>
+</section>
+{% endblock %}

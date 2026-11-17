@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block titulo %}Estética Unisex{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'sitio/css/EstiloBase.css' %}">
+    {% block estilos %}{% endblock %}
+</head>
+<body>
+    <header class="barra">
+        <a class="barra__marca" href="{% url 'index' %}">
+            <span class="logo-cuadro">E</span>
+            <span class="barra__texto">
+                <strong>Estética Unisex</strong>
+                <small>Salón &amp; belleza</small>
+            </span>
+        </a>
+
+        <nav class="barra__nav" aria-label="Menú principal">
+            <a href="{% url 'index' %}"
+               class="{% if request.resolver_match.url_name == 'index' %}activo{% endif %}">Inicio</a>
+            <a href="{% url 'servicios' %}"
+               class="{% if request.resolver_match.url_name == 'servicios' %}activo{% endif %}">Servicios</a>
+            <a href="{% url 'formulario' %}"
+               class="{% if request.resolver_match.url_name == 'formulario' %}activo{% endif %}">Agendar cita</a>
+        </nav>
+
+        <div class="barra__cuenta">
+            {% if request.session.usuario_id %}
+                <span class="barra__saludo">Hola, {{ request.session.usuario_nombre }}</span>
+                <a class="boton boton--fantasma boton--chico" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a>
+            {% else %}
+                <a class="boton boton--negro boton--chico" href="{% url 'login' %}">Iniciar sesión</a>
+            {% endif %}
+        </div>
+    </header>
+
+    {% if messages %}
+        <div class="avisos">
+            {% for mensaje in messages %}
+                <p class="aviso aviso--{{ mensaje.tags }}">{{ mensaje }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% block contenido %}{% endblock %}
+
+    <footer class="pie">
+        <div class="pie__grid">
+            <div>
+                <p class="pie__marca">Estética Unisex</p>
+                <p class="pie__texto">Cuidado del cabello, color y estilo con un trato cercano. Un espacio blanco y negro donde cada detalle cuenta.</p>
+            </div>
+            <div>
+                <p class="pie__titulo">Navegación</p>
+                <a href="{% url 'index' %}">Inicio</a>
+                <a href="{% url 'servicios' %}">Servicios</a>
+                <a href="{% url 'formulario' %}">Agendar cita</a>
+            </div>
+            <div>
+                <p class="pie__titulo">Contacto</p>
+                <p class="pie__texto">Av. Principal 124, Centro</p>
+                <p class="pie__texto">Tel. 555 123 4567</p>
+                <p class="pie__texto">hola@estetica.com</p>
+            </div>
+        </div>
+        <p class="pie__legal">© {% now "Y" %} Estética Unisex. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

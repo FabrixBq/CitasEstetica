@@ -1,25 +1,199 @@
-body {
-    font-family: 'Times New Roman', Times, serif;
-    margin: 0;
-    padding: 0;
+/* =========================================================
+   Portada, enfoque y franja de llamada (index)
+   ========================================================= */
+
+.portada {
+    color: var(--blanco);
+    background: var(--negro);
 }
 
-.menu_modulos {
-    display: flex;
-    justify-content: center;
+.portada__interior {
+    display: grid;
     align-items: center;
-    gap: 20px;
-    margin-top: 20px;
+    gap: clamp(2rem, 5vw, 4rem);
+    grid-template-columns: 1.15fr .85fr;
+    max-width: var(--ancho);
+    margin: 0 auto;
+    padding: clamp(3rem, 7vw, 6rem) clamp(1.25rem, 4vw, 3rem);
 }
 
-.menu_modulos li a {
-    text-decoration: none;
-    color: black;
-    font-weight: bold;
-    font-size: 18px;
+.portada h1 {
+    margin-bottom: 1.1rem;
+    font-size: clamp(2.4rem, 5.2vw, 4.1rem);
+    line-height: 1.04;
+    color: var(--blanco);
 }
 
-.menu_modulos li a:hover {
-    color: darkorange;
-    transition: color 0.3s ease;
+.portada h1 em {
+    font-style: italic;
+    color: #b9b9b9;
+}
+
+.portada__parrafo {
+    max-width: 34rem;
+    margin-bottom: 2rem;
+    font-size: 1.03rem;
+    line-height: 1.7;
+    color: #cfcfcf;
+}
+
+.portada__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .8rem;
+    margin-bottom: clamp(2rem, 4vw, 2.75rem);
+}
+
+.portada__datos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, .16);
+}
+
+.dato {
+    display: flex;
+    flex-direction: column;
+    gap: .2rem;
+}
+
+.dato__valor {
+    font-family: var(--display);
+    font-size: 1.65rem;
+    line-height: 1;
+    color: var(--blanco);
+}
+
+.dato__texto {
+    font-size: .66rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: #8f8f8f;
+}
+
+/* Composición decorativa en blanco y negro */
+
+.portada__visual {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: clamp(18rem, 32vw, 26rem);
+    border: 1px solid rgba(255, 255, 255, .16);
+    background:
+        radial-gradient(circle at 50% 50%,
+            transparent 0 24%,
+            rgba(255, 255, 255, .14) 24.1% 24.5%,
+            transparent 24.7% 38%,
+            rgba(255, 255, 255, .09) 38.1% 38.5%,
+            transparent 38.7% 52%,
+            rgba(255, 255, 255, .06) 52.1% 52.5%,
+            transparent 52.7% 100%),
+        linear-gradient(160deg, #1b1b1b 0%, #0a0a0a 70%);
+    overflow: hidden;
+}
+
+.portada__aro {
+    position: absolute;
+    inset: auto;
+    width: 58%;
+    aspect-ratio: 1;
+    border: 1px solid rgba(255, 255, 255, .25);
+    border-radius: 50%;
+}
+
+.portada__monograma {
+    position: relative;
+    font-family: var(--display);
+    font-size: clamp(3rem, 6vw, 4.5rem);
+    line-height: 1;
+    color: var(--blanco);
+}
+
+.portada__pie {
+    position: absolute;
+    right: 1.25rem;
+    bottom: 1.15rem;
+    margin: 0;
+    font-size: .64rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    text-align: right;
+    line-height: 1.7;
+    color: #8f8f8f;
+}
+
+/* Enfoque */
+
+.enfoque {
+    display: grid;
+    gap: clamp(1.25rem, 3vw, 2.5rem);
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+
+.enfoque__item {
+    padding-top: 1.35rem;
+    border-top: 1px solid var(--negro);
+}
+
+.enfoque__num {
+    display: block;
+    margin-bottom: .85rem;
+    font-family: var(--display);
+    font-size: .8rem;
+    letter-spacing: .22em;
+    color: var(--gris-medio);
+}
+
+.enfoque__item h3 {
+    margin-bottom: .55rem;
+}
+
+.enfoque__item p {
+    font-size: .93rem;
+    line-height: 1.7;
+    color: var(--gris);
+}
+
+/* Franja de llamada */
+
+.franja {
+    color: var(--blanco);
+    background: var(--negro);
+}
+
+.franja__interior {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: clamp(3rem, 7vw, 5.5rem) clamp(1.25rem, 4vw, 3rem);
+    text-align: center;
+}
+
+.franja h2 {
+    margin: 0;
+    max-width: 26ch;
+    font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+    color: var(--blanco);
+}
+
+.franja__texto {
+    max-width: 34rem;
+    margin: 0;
+    color: #b6b6b6;
+}
+
+.franja .boton {
+    margin-top: .85rem;
+}
+
+@media (max-width: 900px) {
+    .portada__interior {
+        grid-template-columns: 1fr;
+    }
+
+    .portada__visual {
+        min-height: 15rem;
+    }
 }

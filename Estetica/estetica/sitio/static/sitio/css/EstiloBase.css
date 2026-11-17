@@ -1,0 +1,619 @@
+/* =========================================================
+   Estética Unisex · Estilos base (blanco y negro)
+   Paleta: blanco puro, hueso, negros y grises neutros.
+   ========================================================= */
+
+:root {
+    --negro: #0a0a0a;
+    --carbon: #151515;
+    --grafito: #262626;
+    --gris: #6f6f6f;
+    --gris-medio: #a3a3a3;
+    --linea: #e3e1dc;
+    --hueso: #f6f4f0;
+    --blanco: #ffffff;
+    --display: "Didot", "Bodoni MT", Georgia, "Times New Roman", serif;
+    --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --ancho: 1160px;
+    --radio: 2px;
+    --transicion: 260ms cubic-bezier(.4, 0, .2, 1);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--grafito);
+    background: var(--blanco);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+    margin: 0 0 .55em;
+    font-family: var(--display);
+    font-weight: 400;
+    line-height: 1.12;
+    letter-spacing: .01em;
+    color: var(--negro);
+}
+
+h1 { font-size: clamp(2.2rem, 4vw, 3.1rem); }
+h2 { font-size: clamp(1.5rem, 2.4vw, 2rem); }
+h3 { font-size: 1.2rem; }
+
+p { margin: 0 0 1em; }
+p:last-child { margin-bottom: 0; }
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+ul, ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+::selection {
+    background: var(--negro);
+    color: var(--blanco);
+}
+
+/* ---------- Estructura ---------- */
+
+.contenedor {
+    width: 100%;
+    max-width: var(--ancho);
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 3rem);
+}
+
+.seccion {
+    padding: clamp(3rem, 7vw, 6rem) 0;
+}
+
+.seccion--hueso {
+    background: var(--hueso);
+}
+
+.seccion--linea {
+    border-top: 1px solid var(--linea);
+}
+
+.etiqueta {
+    display: block;
+    margin: 0 0 1rem;
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    color: var(--gris);
+}
+
+.etiqueta--clara {
+    color: var(--gris-medio);
+}
+
+.entradilla {
+    max-width: 46rem;
+    font-size: 1.02rem;
+    color: var(--gris);
+}
+
+.encabezado-seccion {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+.encabezado-seccion h2 {
+    margin-bottom: 0;
+}
+
+/* ---------- Barra superior ---------- */
+
+.barra {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem 2rem;
+    flex-wrap: wrap;
+    padding: .95rem clamp(1.25rem, 4vw, 3rem);
+    background: rgba(255, 255, 255, .94);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--linea);
+}
+
+.barra__marca {
+    display: inline-flex;
+    align-items: center;
+    gap: .8rem;
+    color: var(--negro);
+}
+
+.logo-cuadro {
+    display: grid;
+    place-items: center;
+    width: 2.15rem;
+    height: 2.15rem;
+    border: 1px solid currentColor;
+    font-family: var(--display);
+    font-size: 1.15rem;
+    line-height: 1;
+}
+
+.barra__texto {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.barra__texto strong {
+    font-family: var(--display);
+    font-size: 1.12rem;
+    font-weight: 400;
+    letter-spacing: .04em;
+}
+
+.barra__texto small {
+    font-size: .6rem;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    color: var(--gris);
+}
+
+.barra__nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.1rem, 3vw, 2.4rem);
+    flex-wrap: wrap;
+}
+
+.barra__nav a {
+    position: relative;
+    padding-bottom: .35rem;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--gris);
+    transition: color var(--transicion);
+}
+
+.barra__nav a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--negro);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--transicion);
+}
+
+.barra__nav a:hover,
+.barra__nav a.activo {
+    color: var(--negro);
+}
+
+.barra__nav a:hover::after,
+.barra__nav a.activo::after {
+    transform: scaleX(1);
+}
+
+.barra__cuenta {
+    display: flex;
+    align-items: center;
+    gap: .9rem;
+}
+
+.barra__saludo {
+    font-size: .78rem;
+    letter-spacing: .04em;
+    color: var(--gris);
+}
+
+/* ---------- Botones ---------- */
+
+.boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    padding: .9rem 1.9rem;
+    font-family: var(--sans);
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--negro);
+    background: transparent;
+    border: 1px solid var(--negro);
+    border-radius: var(--radio);
+    cursor: pointer;
+    transition: background var(--transicion), color var(--transicion),
+                border-color var(--transicion), transform var(--transicion);
+}
+
+.boton:hover {
+    transform: translateY(-1px);
+}
+
+.boton:focus-visible {
+    outline: 2px solid var(--negro);
+    outline-offset: 3px;
+}
+
+.boton--negro {
+    background: var(--negro);
+    color: var(--blanco);
+}
+
+.boton--negro:hover {
+    background: var(--grafito);
+    border-color: var(--grafito);
+}
+
+.boton--blanco {
+    background: var(--blanco);
+    color: var(--negro);
+    border-color: var(--blanco);
+}
+
+.boton--blanco:hover {
+    background: transparent;
+    color: var(--blanco);
+}
+
+.boton--linea {
+    color: var(--blanco);
+    border-color: rgba(255, 255, 255, .5);
+}
+
+.boton--linea:hover {
+    color: var(--negro);
+    background: var(--blanco);
+    border-color: var(--blanco);
+}
+
+.boton--fantasma {
+    color: var(--grafito);
+    border-color: var(--linea);
+}
+
+.boton--fantasma:hover {
+    color: var(--negro);
+    border-color: var(--negro);
+}
+
+.boton--chico {
+    padding: .55rem 1.05rem;
+    font-size: .64rem;
+}
+
+.boton--bloque {
+    width: 100%;
+}
+
+/* ---------- Formularios ---------- */
+
+.campo {
+    margin-bottom: 1.4rem;
+}
+
+.campo label {
+    display: block;
+    margin-bottom: .5rem;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--grafito);
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+    width: 100%;
+    padding: .85rem 1rem;
+    font-family: var(--sans);
+    font-size: .95rem;
+    color: var(--negro);
+    background: var(--blanco);
+    border: 1px solid var(--linea);
+    border-radius: var(--radio);
+    transition: border-color var(--transicion), box-shadow var(--transicion);
+}
+
+.campo select {
+    padding-right: 2.25rem;
+}
+
+.campo input:hover,
+.campo select:hover,
+.campo textarea:hover {
+    border-color: var(--gris-medio);
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+    outline: none;
+    border-color: var(--negro);
+    box-shadow: 0 0 0 3px rgba(10, 10, 10, .07);
+}
+
+.campo input::placeholder {
+    color: var(--gris-medio);
+}
+
+/* ---------- Avisos ---------- */
+
+.avisos {
+    display: grid;
+    gap: .6rem;
+    width: 100%;
+    max-width: var(--ancho);
+    margin: 1.5rem auto 0;
+    padding: 0 clamp(1.25rem, 4vw, 3rem);
+}
+
+.aviso {
+    margin: 0;
+    padding: .85rem 1.15rem;
+    font-size: .88rem;
+    color: var(--grafito);
+    background: var(--hueso);
+    border-left: 2px solid var(--negro);
+}
+
+.aviso--error {
+    color: var(--blanco);
+    background: var(--negro);
+    border-left-color: var(--blanco);
+}
+
+.aviso--warning {
+    background: var(--blanco);
+    border: 1px solid var(--negro);
+    border-left-width: 2px;
+}
+
+/* ---------- Tarjetas de servicio ---------- */
+
+.rejilla-servicios {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+
+.tarjeta-servicio {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    padding: 1.75rem;
+    background: var(--blanco);
+    border: 1px solid var(--linea);
+    transition: border-color var(--transicion), transform var(--transicion),
+                box-shadow var(--transicion);
+}
+
+.tarjeta-servicio:hover {
+    transform: translateY(-3px);
+    border-color: var(--negro);
+    box-shadow: 0 14px 30px -22px rgba(10, 10, 10, .55);
+}
+
+.tarjeta-servicio__num {
+    margin: 0;
+    font-family: var(--display);
+    font-size: .85rem;
+    letter-spacing: .18em;
+    color: var(--gris-medio);
+}
+
+.tarjeta-servicio h2 {
+    margin: .35rem 0 0;
+    font-size: 1.42rem;
+}
+
+.tarjeta-servicio__meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0;
+    padding-top: .9rem;
+    font-size: .82rem;
+    letter-spacing: .06em;
+    color: var(--gris);
+    border-top: 1px solid var(--linea);
+}
+
+.tarjeta-servicio__precio {
+    font-family: var(--display);
+    font-size: 1.15rem;
+    color: var(--negro);
+}
+
+.tarjeta-servicio__link {
+    margin-top: auto;
+    padding-top: 1.1rem;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--negro);
+}
+
+.tarjeta-servicio__link span {
+    display: inline-block;
+    transition: transform var(--transicion);
+}
+
+.tarjeta-servicio__link:hover span {
+    transform: translateX(4px);
+}
+
+.vacio {
+    padding: 2rem 1.75rem;
+    font-size: .95rem;
+    color: var(--gris);
+    background: var(--hueso);
+    border: 1px dashed var(--gris-medio);
+}
+
+/* ---------- Encabezados de página interior ---------- */
+
+.pagina-encabezado {
+    max-width: 46rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.pagina-encabezado h1 {
+    margin-bottom: .85rem;
+    font-size: clamp(2.1rem, 4vw, 2.9rem);
+}
+
+.pagina-encabezado .entradilla {
+    margin-bottom: 0;
+}
+
+.pagina-llamada {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+    padding-top: clamp(1.5rem, 3vw, 2rem);
+    border-top: 1px solid var(--linea);
+}
+
+.pagina-llamada p {
+    margin: 0;
+    max-width: 30rem;
+    font-size: .95rem;
+    color: var(--gris);
+}
+
+/* ---------- Pie de página ---------- */
+
+.pie {
+    padding: clamp(2.5rem, 6vw, 4rem) clamp(1.25rem, 4vw, 3rem) 1.75rem;
+    color: #d6d6d6;
+    background: var(--negro);
+}
+
+.pie__grid {
+    display: grid;
+    gap: 2rem;
+    max-width: var(--ancho);
+    margin: 0 auto;
+    grid-template-columns: 1.6fr 1fr 1fr;
+}
+
+.pie__marca {
+    margin: 0 0 .75rem;
+    font-family: var(--display);
+    font-size: 1.35rem;
+    color: var(--blanco);
+}
+
+.pie__titulo {
+    margin: 0 0 .9rem;
+    font-size: .66rem;
+    font-weight: 700;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+    color: var(--gris-medio);
+}
+
+.pie__texto {
+    margin: 0 0 .4rem;
+    font-size: .88rem;
+    line-height: 1.7;
+    color: #a8a8a8;
+}
+
+.pie a {
+    display: block;
+    margin-bottom: .45rem;
+    font-size: .88rem;
+    color: #cfcfcf;
+    transition: color var(--transicion);
+}
+
+.pie a:hover {
+    color: var(--blanco);
+}
+
+.pie__legal {
+    max-width: var(--ancho);
+    margin: 2.5rem auto 0;
+    padding-top: 1.35rem;
+    font-size: .72rem;
+    letter-spacing: .08em;
+    color: #777;
+    border-top: 1px solid #262626;
+}
+
+/* ---------- Responsivo ---------- */
+
+@media (max-width: 900px) {
+    .barra {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .barra__cuenta {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .pie__grid {
+        grid-template-columns: 1fr;
+        gap: 1.75rem;
+    }
+}
+
+@media (max-width: 560px) {
+    .barra__nav {
+        gap: .9rem;
+    }
+
+    .barra__nav a {
+        font-size: .66rem;
+        letter-spacing: .14em;
+    }
+
+    .barra__saludo {
+        display: none;
+    }
+}

@@ -1,8 +1,65 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
-    <head>
-        <title> Inicio de Sesión </title>
-        <link rel="stylesheet" href="{% static 'sitio/css/EstiloLogin.css' %}"
-    </head>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Iniciar sesión · Estética Unisex</title>
+    <link rel="stylesheet" href="{% static 'sitio/css/EstiloBase.css' %}">
+    <link rel="stylesheet" href="{% static 'sitio/css/EstiloLogin.css' %}">
+</head>
+<body class="pagina-login">
+    <section class="login-panel">
+        <a class="login-panel__marca" href="{% url 'index' %}">
+            <span class="logo-cuadro">E</span>
+            <span>Estética Unisex</span>
+        </a>
+
+        <div class="login-panel__cita">
+            <p class="login-panel__etiqueta">Tu espacio de belleza</p>
+            <p class="login-panel__frase">
+                “Un corte a tiempo, un color a tu medida y una cita siempre a la hora que elijas.”
+            </p>
+        </div>
+
+        <a class="login-panel__volver" href="{% url 'index' %}">← Volver al inicio</a>
+    </section>
+
+    <section class="login-formulario">
+        <div class="login-caja">
+            <p class="etiqueta">Cuenta de cliente</p>
+            <h1>Inicia sesión</h1>
+            <p class="login-caja__texto">Accede con tu correo para agendar tu cita.</p>
+
+            {% if messages %}
+                <div class="avisos avisos--login">
+                    {% for mensaje in messages %}
+                        <p class="aviso aviso--{{ mensaje.tags }}">{{ mensaje }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ siguiente }}">
+
+                <div class="campo">
+                    <label for="correo">Correo electrónico</label>
+                    <input type="email" name="correo" id="correo" value="{{ correo }}"
+                           placeholder="tu@correo.com" autocomplete="email" required autofocus>
+                </div>
+
+                <div class="campo">
+                    <label for="psswd">Contraseña</label>
+                    <input type="password" name="psswd" id="psswd"
+                           placeholder="••••••••" autocomplete="current-password" required>
+                </div>
+
+                <button type="submit" class="boton boton--negro boton--bloque">Entrar</button>
+            </form>
+
+            <p class="login-caja__pie">¿Aún no tienes cuenta? Solicítala en recepción del salón.</p>
+        </div>
+    </section>
+</body>
 </html>
