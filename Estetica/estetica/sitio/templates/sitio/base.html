@@ -25,6 +25,10 @@
                class="{% if request.resolver_match.url_name == 'servicios' %}activo{% endif %}">Servicios</a>
             <a href="{% url 'formulario' %}"
                class="{% if request.resolver_match.url_name == 'formulario' %}activo{% endif %}">Agendar cita</a>
+            {% if request.session.usuario_rol == 'administrador' %}
+                <a href="{% url 'citas' %}"
+                   class="{% if request.resolver_match.url_name == 'citas' %}activo{% endif %}">Citas</a>
+            {% endif %}
         </nav>
 
         <div class="barra__cuenta">

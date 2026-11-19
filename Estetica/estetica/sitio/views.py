@@ -10,6 +10,7 @@ from .models import Cita, Servicio, Usuario
 DURACION_POR_DEFECTO = 60
 ESTADO_PENDIENTE = 'pendiente'
 ESTADO_CANCELADA = 'cancelada'
+ROL_ADMINISTRADOR = 'administrador'
 
 
 def _usuario_en_sesion(request):
@@ -35,6 +36,34 @@ def servicios(request):
     }
 
     return render(request, 'sitio/servicios.html', context)
+
+
+def listado_citas(request):
+    """Panel de citas registradas, solo para el rol administrador."""
+    usuario = _usuario_en_sesion(request)
+
+    if usuario is None:
+        return redirect(f"{reverse('login')}?next={reverse('citas')}")
+
+    if (usuario.rol or '').strip().lower() != ROL_ADMINISTRADOR:
+        messages.error(request, 'Solo el personal administrador puede consultar las citas registradas.')
+        return redirect('index')
+
+    citas = (
+        Cita.objects
+        .select_related('id_usuario', 'id_servicio')
+        .order_by('-fecha', '-hora_inicio')
+    )
+
+    context = {
+        'citas': citas,
+        'total_citas': citas.count(),
+        'citas_pendientes': citas.filter(estado=ESTADO_PENDIENTE).count(),
+        'citas_hoy': citas.filter(fecha=date.today()).count(),
+        'usuario': usuario,
+    }
+
+    return render(request, 'sitio/citas.html', context)
 
 
 def iniciar_sesion(request):
@@ -122,6 +151,9 @@ def formulario(request):
 
         if fecha_cita and fecha_cita < date.today():
             errores.append('La fecha de la cita no puede estar en el pasado.')
+
+        if fecha_cita == date.today() and hora_cita and hora_cita < datetime.now().time():
+            errores.append('Esa hora ya pasó. Elige una hora posterior a la actual.')
 
         fin = None
         if servicio and fecha_cita and hora_cita:

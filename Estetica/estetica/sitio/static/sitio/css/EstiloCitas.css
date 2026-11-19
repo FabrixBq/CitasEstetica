@@ -1,0 +1,129 @@
+/* =========================================================
+   Panel de citas (administrador)
+   ========================================================= */
+
+.citas-resumen {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    margin-bottom: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+.citas-resumen__dato {
+    padding: 1.15rem 1.25rem;
+    background: var(--hueso);
+    border-left: 2px solid var(--negro);
+}
+
+.citas-resumen__valor {
+    display: block;
+    margin-bottom: .35rem;
+    font-family: var(--display);
+    font-size: 1.9rem;
+    line-height: 1;
+    color: var(--negro);
+}
+
+.citas-resumen__texto {
+    font-size: .64rem;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--gris);
+}
+
+.citas-tabla-envoltura {
+    overflow-x: auto;
+    border: 1px solid var(--linea);
+}
+
+.citas-tabla {
+    width: 100%;
+    min-width: 46rem;
+    border-collapse: collapse;
+}
+
+.citas-tabla th {
+    padding: .9rem 1rem;
+    font-size: .62rem;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    text-align: left;
+    white-space: nowrap;
+    color: var(--gris);
+    background: var(--hueso);
+    border-bottom: 1px solid var(--linea);
+}
+
+.citas-tabla td {
+    padding: .95rem 1rem;
+    font-size: .9rem;
+    color: var(--grafito);
+    vertical-align: middle;
+    border-bottom: 1px solid var(--linea);
+}
+
+.citas-tabla tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.citas-tabla tbody tr:hover {
+    background: #fbfaf8;
+}
+
+.citas-tabla__fecha {
+    font-family: var(--display);
+    font-size: 1.02rem;
+    white-space: nowrap;
+    color: var(--negro);
+}
+
+.citas-tabla__hora {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.citas-tabla__cliente strong {
+    display: block;
+    font-weight: 600;
+    color: var(--negro);
+}
+
+.citas-tabla__cliente span {
+    font-size: .78rem;
+    color: var(--gris);
+}
+
+.citas-tabla__detalle {
+    display: block;
+    font-size: .74rem;
+    letter-spacing: .06em;
+    color: var(--gris);
+}
+
+.estado {
+    display: inline-block;
+    padding: .25rem .6rem;
+    font-size: .62rem;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    border: 1px solid var(--negro);
+}
+
+.estado--pendiente {
+    color: var(--negro);
+    background: var(--blanco);
+}
+
+.estado--lista {
+    color: var(--blanco);
+    background: var(--negro);
+}
+
+.estado--cancelada {
+    color: var(--gris);
+    border-color: var(--linea);
+    text-decoration: line-through;
+}

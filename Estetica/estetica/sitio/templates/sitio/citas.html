@@ -1,0 +1,92 @@
+{% extends 'sitio/base.html' %}
+{% load static %}
+
+{% block titulo %}Citas registradas · Estética Unisex{% endblock %}
+
+{% block estilos %}
+<link rel="stylesheet" href="{% static 'sitio/css/EstiloCitas.css' %}">
+{% endblock %}
+
+{% block contenido %}
+<section class="seccion">
+    <div class="contenedor">
+        <header class="pagina-encabezado">
+            <p class="etiqueta">Panel administrativo</p>
+            <h1>Citas registradas</h1>
+            <p class="entradilla">
+                Todas las reservas capturadas desde el formulario, ordenadas de la más
+                reciente a la más antigua, con el cliente que la agendó.
+            </p>
+        </header>
+
+        <div class="citas-resumen">
+            <div class="citas-resumen__dato">
+                <span class="citas-resumen__valor">{{ total_citas }}</span>
+                <span class="citas-resumen__texto">Citas en total</span>
+            </div>
+            <div class="citas-resumen__dato">
+                <span class="citas-resumen__valor">{{ citas_pendientes }}</span>
+                <span class="citas-resumen__texto">Pendientes</span>
+            </div>
+            <div class="citas-resumen__dato">
+                <span class="citas-resumen__valor">{{ citas_hoy }}</span>
+                <span class="citas-resumen__texto">Para hoy</span>
+            </div>
+        </div>
+
+        {% if citas %}
+            <div class="citas-tabla-envoltura">
+                <table class="citas-tabla">
+                    <thead>
+                        <tr>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Horario</th>
+                            <th scope="col">Cliente</th>
+                            <th scope="col">Servicio</th>
+                            <th scope="col">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cita in citas %}
+                            <tr>
+                                <td class="citas-tabla__fecha">
+                                    {{ cita.fecha|date:"d/m/Y"|default:"—" }}
+                                </td>
+                                <td class="citas-tabla__hora">
+                                    {% if cita.hora_inicio %}
+                                        {{ cita.hora_inicio|time:"H:i" }}{% if cita.hora_fin %} – {{ cita.hora_fin|time:"H:i" }}{% endif %}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+                                <td class="citas-tabla__cliente">
+                                    <strong>{{ cita.id_usuario.nombre|default:"Sin nombre" }}</strong>
+                                    <span>{{ cita.id_usuario.correo|default:"" }}</span>
+                                </td>
+                                <td>
+                                    {{ cita.id_servicio.nombre|default:"Sin servicio" }}
+                                    {% if cita.id_servicio.duracion_min %}
+                                        <span class="citas-tabla__detalle">{{ cita.id_servicio.duracion_min }} min</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="estado estado--{{ cita.estado|default:'pendiente' }}">
+                                        {{ cita.estado|default:"pendiente" }}
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="vacio">Todavía no hay citas registradas. Cuando un cliente agende, aparecerá aquí.</p>
+        {% endif %}
+
+        <div class="pagina-llamada">
+            <p>El listado se actualiza con cada cita nueva que se capture en el formulario.</p>
+            <a class="boton boton--fantasma boton--chico" href="{% url 'servicios' %}">Ver servicios</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
