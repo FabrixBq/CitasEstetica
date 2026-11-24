@@ -28,6 +28,9 @@
             {% if request.session.usuario_rol == 'administrador' %}
                 <a href="{% url 'citas' %}"
                    class="{% if request.resolver_match.url_name == 'citas' %}activo{% endif %}">Citas</a>
+            {% elif request.session.usuario_rol == 'cliente' %}
+                <a href="{% url 'mis_citas' %}"
+                   class="{% if request.resolver_match.url_name == 'mis_citas' %}activo{% endif %}">Mis citas</a>
             {% endif %}
         </nav>
 

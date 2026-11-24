@@ -24,6 +24,14 @@ urlpatterns = [
     path('servicios/', views.servicios, name='servicios'),
     path('formulario/', views.formulario, name='formulario'),
     path('citas/', views.listado_citas, name='citas'),
+    path('mis-citas/', views.mis_citas, name='mis_citas'),
+    path('citas/<int:id_cita>/cancelar/', views.cancelar_cita, name='cancelar_cita'),
+    path('citas/<int:id_cita>/eliminar/', views.eliminar_cita, name='eliminar_cita'),
+    path(
+        'citas/eliminar-canceladas/',
+        views.eliminar_citas_canceladas,
+        name='eliminar_citas_canceladas',
+    ),
     path('login/', views.iniciar_sesion, name='login'),
     path('cerrar-sesion/', views.cerrar_sesion, name='cerrar_sesion'),
 ]

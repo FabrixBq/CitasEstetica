@@ -19,6 +19,18 @@
             </p>
         </header>
 
+        {% if citas_canceladas %}
+            <div class="citas-barra">
+                <form class="citas-accion" method="post" action="{% url 'eliminar_citas_canceladas' %}"
+                      onsubmit="return confirm('¿Borrar todas las citas canceladas del registro? No se puede deshacer.');">
+                    {% csrf_token %}
+                    <button class="boton boton--negro boton--chico" type="submit">
+                        Borrar citas canceladas ({{ citas_canceladas }})
+                    </button>
+                </form>
+            </div>
+        {% endif %}
+
         <div class="citas-resumen">
             <div class="citas-resumen__dato">
                 <span class="citas-resumen__valor">{{ total_citas }}</span>
@@ -32,6 +44,10 @@
                 <span class="citas-resumen__valor">{{ citas_hoy }}</span>
                 <span class="citas-resumen__texto">Para hoy</span>
             </div>
+            <div class="citas-resumen__dato">
+                <span class="citas-resumen__valor">{{ citas_canceladas }}</span>
+                <span class="citas-resumen__texto">Canceladas</span>
+            </div>
         </div>
 
         {% if citas %}
@@ -44,6 +60,7 @@
                             <th scope="col">Cliente</th>
                             <th scope="col">Servicio</th>
                             <th scope="col">Estado</th>
+                            <th scope="col" class="citas-tabla__acciones-cabecera">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -74,6 +91,23 @@
                                         {{ cita.estado|default:"pendiente" }}
                                     </span>
                                 </td>
+                                <td class="citas-tabla__acciones">
+                                    {% if cita.estado == 'cancelada' %}
+                                        <form class="citas-accion" method="post"
+                                              action="{% url 'eliminar_cita' cita.id_cita %}"
+                                              onsubmit="return confirm('¿Borrar esta cita cancelada del registro? No se puede deshacer.');">
+                                            {% csrf_token %}
+                                            <button class="boton boton--fantasma boton--chico" type="submit">Borrar</button>
+                                        </form>
+                                    {% else %}
+                                        <form class="citas-accion" method="post"
+                                              action="{% url 'cancelar_cita' cita.id_cita %}"
+                                              onsubmit="return confirm('¿Cancelar esta cita? El horario volverá a estar disponible.');">
+                                            {% csrf_token %}
+                                            <button class="boton boton--fantasma boton--chico" type="submit">Cancelar</button>
+                                        </form>
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -84,7 +118,7 @@
         {% endif %}
 
         <div class="pagina-llamada">
-            <p>El listado se actualiza con cada cita nueva que se capture en el formulario.</p>
+            <p>El listado se actualiza con cada cita nueva que se capture en el formulario. Si anulas una, el horario vuelve a quedar libre.</p>
             <a class="boton boton--fantasma boton--chico" href="{% url 'servicios' %}">Ver servicios</a>
         </div>
     </div>

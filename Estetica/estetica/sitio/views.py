@@ -1,14 +1,18 @@
 from datetime import date, datetime, time, timedelta
 
 from django.contrib import messages
+from django.db.models import Q
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 
-from .models import Cita, Servicio, Usuario
+from .models import Cita, Horario, Servicio, Usuario
 
 DURACION_POR_DEFECTO = 60
+MARGEN_CIERRE_MIN = 10
+DIAS_SEMANA = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 ESTADO_PENDIENTE = 'pendiente'
+ESTADO_LISTA = 'lista'
 ESTADO_CANCELADA = 'cancelada'
 ROL_ADMINISTRADOR = 'administrador'
 
@@ -16,6 +20,39 @@ ROL_ADMINISTRADOR = 'administrador'
 def _usuario_en_sesion(request):
     """Devuelve el usuario guardado en la sesión o None."""
     return Usuario.objects.filter(pk=request.session.get('usuario_id')).first()
+
+
+def _es_administrador(usuario):
+    return (usuario.rol or '').strip().lower() == ROL_ADMINISTRADOR
+
+
+def _panel_de_citas(usuario):
+    """Nombre de la ruta del panel que le corresponde al usuario."""
+    return 'citas' if _es_administrador(usuario) else 'mis_citas'
+
+
+def _cita_cancelada(cita):
+    return (cita.estado or '').strip().lower() == ESTADO_CANCELADA
+
+
+def _hora_cierre(fecha):
+    """Hora de cierre del salón para la fecha indicada, o None si no hay horario."""
+    horario = Horario.objects.filter(dia_semana__iexact=DIAS_SEMANA[fecha.weekday()]).first()
+
+    return horario.cierre if horario else None
+
+
+def _marcar_citas_atendidas():
+    """Pasa de 'pendiente' a 'lista' las citas cuyo horario ya terminó."""
+    hoy = date.today()
+    ahora = datetime.now().time()
+
+    return (
+        Cita.objects
+        .filter(estado=ESTADO_PENDIENTE)
+        .filter(Q(fecha__lt=hoy) | Q(fecha=hoy, hora_fin__lte=ahora))
+        .update(estado=ESTADO_LISTA)
+    )
 
 
 def index(request):
@@ -45,9 +82,11 @@ def listado_citas(request):
     if usuario is None:
         return redirect(f"{reverse('login')}?next={reverse('citas')}")
 
-    if (usuario.rol or '').strip().lower() != ROL_ADMINISTRADOR:
+    if not _es_administrador(usuario):
         messages.error(request, 'Solo el personal administrador puede consultar las citas registradas.')
         return redirect('index')
+
+    _marcar_citas_atendidas()
 
     citas = (
         Cita.objects
@@ -60,10 +99,167 @@ def listado_citas(request):
         'total_citas': citas.count(),
         'citas_pendientes': citas.filter(estado=ESTADO_PENDIENTE).count(),
         'citas_hoy': citas.filter(fecha=date.today()).count(),
+        'citas_canceladas': citas.filter(estado=ESTADO_CANCELADA).count(),
         'usuario': usuario,
     }
 
     return render(request, 'sitio/citas.html', context)
+
+
+def mis_citas(request):
+    """Citas agendadas por el cliente en sesión, con opción de cancelarlas."""
+    usuario = _usuario_en_sesion(request)
+
+    if usuario is None:
+        return redirect(f"{reverse('login')}?next={reverse('mis_citas')}")
+
+    if _es_administrador(usuario):
+        return redirect('citas')
+
+    _marcar_citas_atendidas()
+
+    citas = (
+        Cita.objects
+        .filter(id_usuario=usuario)
+        .select_related('id_servicio')
+        .order_by('fecha', 'hora_inicio')
+    )
+
+    hoy = date.today()
+    citas_proximas = []
+    citas_anteriores = []
+
+    for cita in citas:
+        finalizada = _cita_cancelada(cita) or (cita.estado or '').strip().lower() == ESTADO_LISTA
+
+        if not finalizada and cita.fecha and cita.fecha >= hoy:
+            citas_proximas.append(cita)
+        else:
+            citas_anteriores.append(cita)
+
+    citas_anteriores.reverse()
+
+    context = {
+        'usuario': usuario,
+        'citas_proximas': citas_proximas,
+        'citas_anteriores': citas_anteriores,
+        'total_citas': len(citas_proximas) + len(citas_anteriores),
+        'citas_pendientes': citas.filter(estado=ESTADO_PENDIENTE).count(),
+        'citas_canceladas': citas.filter(estado=ESTADO_CANCELADA).count(),
+    }
+
+    return render(request, 'sitio/mis_citas.html', context)
+
+
+def cancelar_cita(request, id_cita):
+    """Cancela una cita. El cliente solo las suyas; el administrador, cualquiera."""
+    usuario = _usuario_en_sesion(request)
+
+    if usuario is None:
+        return redirect(f"{reverse('login')}?next={reverse('mis_citas')}")
+
+    administrador = _es_administrador(usuario)
+    destino = 'citas' if administrador else 'mis_citas'
+    cita = Cita.objects.filter(pk=id_cita).first()
+
+    if cita is None:
+        messages.error(request, 'La cita que quieres cancelar ya no existe.')
+        return redirect(destino)
+
+    if not administrador and cita.id_usuario_id != usuario.id_usuario:
+        messages.error(request, 'Solo puedes cancelar las citas que agendaste tú.')
+        return redirect('mis_citas')
+
+    if request.method != 'POST':
+        messages.error(request, 'Usa el botón de cancelar de la lista para anular una cita.')
+        return redirect(destino)
+
+    if _cita_cancelada(cita):
+        messages.info(request, 'Esa cita ya estaba cancelada.')
+        return redirect(destino)
+
+    cita.estado = ESTADO_CANCELADA
+    cita.save(update_fields=['estado'])
+
+    fecha_texto = f'{cita.fecha:%d/%m/%Y}' if cita.fecha else 'la fecha registrada'
+    messages.success(
+        request,
+        f'La cita del {fecha_texto} quedó cancelada y su horario vuelve a estar disponible.'
+    )
+
+    return redirect(destino)
+
+
+def eliminar_cita(request, id_cita):
+    """Borra del registro una cita cancelada. Cliente: las suyas; admin: cualquiera."""
+    usuario = _usuario_en_sesion(request)
+
+    if usuario is None:
+        return redirect(f"{reverse('login')}?next={reverse('mis_citas')}")
+
+    administrador = _es_administrador(usuario)
+    destino = 'citas' if administrador else 'mis_citas'
+    cita = Cita.objects.filter(pk=id_cita).first()
+
+    if cita is None:
+        messages.error(request, 'La cita que quieres borrar ya no existe.')
+        return redirect(destino)
+
+    if not administrador and cita.id_usuario_id != usuario.id_usuario:
+        messages.error(request, 'Solo puedes borrar las citas que agendaste tú.')
+        return redirect('mis_citas')
+
+    if request.method != 'POST':
+        messages.error(request, 'Usa el botón de borrar de la lista para eliminar una cita.')
+        return redirect(destino)
+
+    if not _cita_cancelada(cita):
+        messages.error(
+            request,
+            'Solo se pueden borrar las citas canceladas. Cancela la cita antes de eliminarla.'
+        )
+        return redirect(destino)
+
+    fecha_texto = f'{cita.fecha:%d/%m/%Y}' if cita.fecha else 'la fecha registrada'
+    cita.delete()
+    messages.success(request, f'La cita cancelada del {fecha_texto} se borró del registro.')
+
+    return redirect(destino)
+
+
+def eliminar_citas_canceladas(request):
+    """Borra todas las citas canceladas visibles para el usuario en sesión."""
+    usuario = _usuario_en_sesion(request)
+
+    if usuario is None:
+        return redirect(f"{reverse('login')}?next={reverse('mis_citas')}")
+
+    administrador = _es_administrador(usuario)
+    destino = 'citas' if administrador else 'mis_citas'
+
+    if request.method != 'POST':
+        messages.error(request, 'Usa el botón de la lista para borrar las citas canceladas.')
+        return redirect(destino)
+
+    canceladas = Cita.objects.filter(estado=ESTADO_CANCELADA)
+
+    if not administrador:
+        canceladas = canceladas.filter(id_usuario=usuario)
+
+    total = canceladas.count()
+
+    if not total:
+        messages.info(request, 'No había citas canceladas por borrar.')
+        return redirect(destino)
+
+    canceladas.delete()
+    messages.success(
+        request,
+        f'Se borraron {total} cita' + ('' if total == 1 else 's') + ' cancelada'
+        + ('' if total == 1 else 's') + ' del registro.'
+    )
+
+    return redirect(destino)
 
 
 def iniciar_sesion(request):
@@ -160,10 +356,18 @@ def formulario(request):
             inicio = datetime.combine(fecha_cita, hora_cita)
             fin = inicio + timedelta(minutes=servicio.duracion_min or DURACION_POR_DEFECTO)
 
+            cierre = _hora_cierre(fecha_cita)
+
             if fin.date() != fecha_cita:
                 fin = None
                 errores.append(
                     'La cita terminaría después de la medianoche, elige una hora más temprana.'
+                )
+            elif cierre and fin + timedelta(minutes=MARGEN_CIERRE_MIN) > datetime.combine(fecha_cita, cierre):
+                errores.append(
+                    f'{servicio.nombre} dura {servicio.duracion_min or DURACION_POR_DEFECTO} minutos '
+                    f'y el salón cierra a las {cierre:%H:%M}. La cita debe terminar al menos '
+                    f'{MARGEN_CIERRE_MIN} minutos antes del cierre; elige una hora más temprana.'
                 )
             elif Cita.objects.filter(
                 fecha=fecha_cita,

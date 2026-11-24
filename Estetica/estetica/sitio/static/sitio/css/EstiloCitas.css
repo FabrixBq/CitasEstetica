@@ -1,6 +1,12 @@
 /* =========================================================
-   Panel de citas (administrador)
+   Paneles de citas (cliente y administrador)
    ========================================================= */
+
+.citas-barra {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
 
 .citas-resumen {
     display: grid;
@@ -39,7 +45,7 @@
 
 .citas-tabla {
     width: 100%;
-    min-width: 46rem;
+    min-width: 52rem;
     border-collapse: collapse;
 }
 
@@ -99,6 +105,57 @@
     display: block;
     font-size: .74rem;
     letter-spacing: .06em;
+    color: var(--gris);
+}
+
+.citas-tabla__acciones-cabecera,
+.citas-tabla__acciones {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.citas-accion {
+    display: inline-block;
+    margin: 0;
+}
+
+.citas-accion .boton {
+    padding: .45rem .9rem;
+    font-size: .6rem;
+    letter-spacing: .16em;
+}
+
+.citas-accion + .citas-accion {
+    margin-left: .35rem;
+}
+
+.citas-grupo {
+    margin-bottom: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+.citas-grupo:last-of-type {
+    margin-bottom: 0;
+}
+
+.citas-grupo__titulo {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .5rem 1rem;
+    margin-bottom: .85rem;
+}
+
+.citas-grupo__titulo h2 {
+    margin: 0;
+    font-size: 1.35rem;
+}
+
+.citas-grupo__titulo span {
+    font-size: .64rem;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
     color: var(--gris);
 }
 
