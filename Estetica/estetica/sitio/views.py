@@ -35,11 +35,9 @@ def _cita_cancelada(cita):
     return (cita.estado or '').strip().lower() == ESTADO_CANCELADA
 
 
-def _hora_cierre(fecha):
-    """Hora de cierre del salón para la fecha indicada, o None si no hay horario."""
-    horario = Horario.objects.filter(dia_semana__iexact=DIAS_SEMANA[fecha.weekday()]).first()
-
-    return horario.cierre if horario else None
+def _horario_del_dia(fecha):
+    """Horario de apertura y cierre para la fecha indicada, o None si no hay registro."""
+    return Horario.objects.filter(dia_semana__iexact=DIAS_SEMANA[fecha.weekday()]).first()
 
 
 def _marcar_citas_atendidas():
@@ -351,12 +349,20 @@ def formulario(request):
         if fecha_cita == date.today() and hora_cita and hora_cita < datetime.now().time():
             errores.append('Esa hora ya pasó. Elige una hora posterior a la actual.')
 
+        horario = _horario_del_dia(fecha_cita) if fecha_cita else None
+
+        if horario and horario.apertura and hora_cita and hora_cita < horario.apertura:
+            errores.append(
+                f'El salón abre a las {horario.apertura:%H:%M} ese día. '
+                'Elige una hora a partir de la apertura.'
+            )
+
         fin = None
         if servicio and fecha_cita and hora_cita:
             inicio = datetime.combine(fecha_cita, hora_cita)
             fin = inicio + timedelta(minutes=servicio.duracion_min or DURACION_POR_DEFECTO)
 
-            cierre = _hora_cierre(fecha_cita)
+            cierre = horario.cierre if horario else None
 
             if fin.date() != fecha_cita:
                 fin = None
